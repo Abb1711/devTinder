@@ -1,7 +1,64 @@
 const express = require('express');
+const connectDB = require("./config/database");
 
 //create new application for the express---instance of express js application
 const app = express();
+const User = require("./models/user");
+
+app.post("/signup",async(req,res) =>{
+    //Creating a new instance of user model
+    const user = new User({
+        firstName :"Virat",
+        lastName : "Kohli",
+        emailId : "kohliji@gmail.com",
+        password : "ee sala cup namde"
+    });
+    try{
+        await user.save();//The data will be saved in our database
+        res.send("User added successfully!!");
+    }catch(err){
+        res.status(400).send("Error while saving the user:" + err.message);
+    }
+
+    
+})
+
+
+connectDB()
+.then(() => {
+    console.log("DB connection successfull....");
+    app.listen(3000,()=> {
+        console.log("Server is succesfully listening on port 3000....");
+    });
+})
+.catch((err) => {
+    console.error("DataBase cannot be connected...");
+});
+
+// app.listen(3000,()=>{
+//     console.log("Server is succesfully listening on port 3000....");
+// });
+
+
+
+
+// app.use(
+    "/user",
+    (req,res,next) =>{
+        console.log("Handling the route user !!");
+        res.send("Response !!");
+        next();
+    },
+    (req,res) =>{
+        console.log("Handling the route user 2");
+        res.send("2nd Responce");
+    }
+// );
+
+
+
+
+
 
 
 //This is known as request handler fuction:-
@@ -13,19 +70,19 @@ const app = express();
 // app.get("/hey", (req, res) => {
 //     res.send("Hey from the server!");
 // });
-app.get("/user",(req,res) =>{
-    res.send({firstName:"Abhishek",lastName:"Yadav"});
-});
-app.post("/user",(req,res)=>{
-    res.send("Data is successfully saved to the database");
-});
-app.delete("/user",(req,res)=>{
-    res.send("Deleted succesffully");
-});
+// app.get("/user",(req,res) =>{
+//     res.send({firstName:"Abhishek",lastName:"Yadav"});
+// // });
+// app.post("/user",(req,res)=>{
+//     res.send("Data is successfully saved to the database");
+// });
+// app.delete("/user",(req,res)=>{
+//     res.send("Deleted succesffully");
+// });
 
-app.get("/test", (req, res) => {
-    res.send("Hello bro test dene aaya hia kya???");
-});
+// app.get("/test", (req, res) => {
+//     res.send("Hello bro test dene aaya hia kya???");
+// });
 //Here app.use will match all the HTTTP method API calls to "/test"-->but app.get() will only match to get call of https
 //we can also use  app.use("/test",(req,res)   =>{
     // res.send("Test dene aaya hai kya bhai?")})
@@ -34,6 +91,4 @@ app.get("/test", (req, res) => {
 
 
 //create server for listening so that any body can connect to it..
-app.listen(3000,()=>{
-    console.log("Server is succesfully listening on port 3000....");
-});
+
